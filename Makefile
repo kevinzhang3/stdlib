@@ -3,12 +3,11 @@ CXXFLAGS = -I.
 
 TARGET = main
 
-SRC_DIR = vector
-BUILD_DIR = build/vector
+BUILD_DIR = build
 BIN_DIR = bin
 
-SRC = main.cpp $(SRC_DIR)/vector.cpp
-OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/vector.o
+SRC = main.cpp
+OBJ = $(BUILD_DIR)/main.o
 BIN = $(BIN_DIR)/$(TARGET)
 
 all: $(BIN)
@@ -17,9 +16,6 @@ $(BIN): $(OBJ) | $(BIN_DIR)
 	$(CXX) $^ -o $@
 
 $(BUILD_DIR)/main.o: main.cpp | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/vector.o: $(SRC_DIR)/vector.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BUILD_DIR):
