@@ -4,10 +4,10 @@
 int main (void) {
     
     Vector<int> my_vec;
-    my_vec.push_back(6);
-    my_vec.push_back(7);
-
-    std::cout << my_vec.at(1) << "\n";
+    for (int i{}; i < 128; i++) {
+        my_vec.push_back(i);
+        std::cout << my_vec[i] << "\n";
+    }
 
     return 0;
 }
