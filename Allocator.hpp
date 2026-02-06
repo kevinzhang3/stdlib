@@ -23,6 +23,10 @@ class Allocator {
         void construct(T* ptr, Args&&... args) {
             new (ptr) T(std::forward<Args>(args)...);
         }
+        
+        void destroy(T* ptr) {
+            ptr->~T();
+        }
 
         T* address(T& x) {
             return &x;

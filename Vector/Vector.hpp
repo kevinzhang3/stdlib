@@ -1,4 +1,5 @@
 #include "../Allocator.hpp"
+#include <iostream>
 
 template <class T, class Alloc = Allocator<T>> 
 
@@ -51,6 +52,19 @@ class Vector {
     int capacity;
     Iterator it;
 
+    void init() {
+        try {
+            container = alloc.allocate(capacity);
+        }
+        catch (int) {
+            std::cout << "max reached";
+        }
+        it = Iterator(container);
+        for (int i{}; i < capacity; i++) {
+            alloc.construct(container + i);
+        }
+    }
+
 public:
 
     Vector() : container(nullptr), size(0), capacity(0), it(nullptr) {}
@@ -70,9 +84,7 @@ public:
     void push_back(T val) {
         if (capacity == 0) {
             capacity += 32;
-            container = alloc.allocate(capacity);
-            alloc.construct(container);
-            it = Iterator(container);
+            init();
         }
         *it++ = val;
         size++;
@@ -80,6 +92,11 @@ public:
 
     void empty() {
         it = this->begin();
+
+        for (int i{}; i < capacity; i++) {
+            alloc.destroy(container + i);
+        }
+
         alloc.deallocate(container);
         size = 0;
         capacity = 0;
