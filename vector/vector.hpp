@@ -1,32 +1,46 @@
-template <typename T> class vector {
+template <typename T> 
+
+class Vector {
     private:
         T* container;
-        int size;
-        int index; 
+        int index = -1; 
+        int size = 0;
     public:
         /* ITERATOR CLASS */
-        class iterator {
+        class Iterator {
             private:
-                int* index;
+                T* index;
         };
 
         /* VECTOR DEFINITIONS */
 
-        vector(T type) {
-            this->size = 0;
+        Vector(T type) {
         }
 
-        ~vector() {
-            delete this->container;
+        ~Vector() {
+            delete container;
         }
 
-        iterator begin() {
-            return this->container;
+        Iterator begin() {
+            return container;
         }
 
-        iterator end() {
-            return this->container + this->size;
+        Iterator end() {
+            return container + size;
         }
+
+        void push_back(const T& val) {
+            if (size == 0 || index == size) {
+                size += 32;
+                index++;
+                container = new T[size];
+            } else {
+                container[index] = val;
+                index++;
+            }
+        }
+
+
 
 
         
