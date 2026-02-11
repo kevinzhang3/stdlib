@@ -81,7 +81,26 @@ class Vector {
 
 public:
 
+    // default constructor
     Vector() : container(nullptr), size(0), capacity(0), it(nullptr) {}
+
+    // std style inits: vector<int> v(size)
+    Vector(int sz) : container(nullptr), capacity(0), it(nullptr) {
+        size = sz;
+    }
+
+    // vector<int> v(size, val)
+    Vector(int sz, T val) {
+        size = sz;
+        capacity = sz;
+        
+        container = alloc.allocate(capacity);
+        it = Iterator(container);
+        for (int i{}; i < capacity; i++) {
+            alloc.construct(container + i);
+            container[i] = val;
+        }
+    }
 
     ~Vector() {
         alloc.deallocate(container);
