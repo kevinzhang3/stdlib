@@ -49,24 +49,16 @@ class Vector {
     Alloc alloc;
     int size;
     int capacity;
-    Iterator it;
 
     void init() {
         container = alloc.allocate(capacity);
-        it = Iterator(container);
-        for (int i{}; i < capacity; i++) {
-            alloc.construct(container + i);
-        }
     }
 
     void grow() {
         int new_capacity = 2;
         T* tmp = alloc.allocate(capacity);
-        for (int i{}; i < new_capacity; i++) {
-            alloc.construct(container + i);
-            if (i < capacity) {
-                tmp[i] = container[i];
-            }
+        for (int i{}; i < capacity; i++) {
+            alloc.construct(tmp + i);
         }
 
         for (int i{}; i < capacity; i++) {
@@ -76,16 +68,15 @@ class Vector {
         alloc.deallocate(container);
         container = tmp;
         capacity = new_capacity;
-        it = this->end();
     }
 
 public:
 
     // default constructor
-    Vector() : container(nullptr), size(0), capacity(0), it(nullptr) {}
+    Vector() : container(nullptr), size(0), capacity(0) {}
 
     // std style inits: vector<int> v(size)
-    Vector(int sz) : container(nullptr), capacity(0), it(nullptr) {
+    Vector(int sz) : container(nullptr), capacity(0) {
         size = sz;
     }
 
@@ -95,10 +86,8 @@ public:
         capacity = sz;
         
         container = alloc.allocate(capacity);
-        it = Iterator(container);
         for (int i{}; i < capacity; i++) {
             alloc.construct(container + i);
-            container[i] = val;
         }
     }
 
@@ -118,17 +107,24 @@ public:
         return Iterator(container + size);
     }
 
-    void push_back(T val) {
+    void push_back(const T& val) {
         if (capacity == 0) {
             capacity += 32;
             init();
         }
-        *it++ = val;
-        size++;
+        alloc.construct(container + size++, val);
     }
 
+    void push_back(T&& val) {
+        if (capacity == 0) {
+            capacity += 32;
+            init();
+        }
+        alloc.construct(container + size++, val);
+    }
+
+
     void empty() {
-        it = this->begin();
 
         for (int i{}; i < capacity; i++) {
             alloc.destroy(container + i);

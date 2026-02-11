@@ -1,5 +1,3 @@
-#include <utility>
-
 template <class T>
 class Allocator {
     const int max_size = 4096;
@@ -21,7 +19,7 @@ class Allocator {
 
         template <class... Args>
         void construct(T* ptr, Args&&... args) {
-            new (ptr) T(std::forward<Args>(args)...);
+            new (ptr) T(args...);
         }
         
         void destroy(T* ptr) {
