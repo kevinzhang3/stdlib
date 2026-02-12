@@ -12,7 +12,7 @@ public:
     Option() : dummy(0), has_value(false) {}
 
     // const ctor
-    Option(const T& t) : val(t), has_value(true) {}
+    Option(const T& t) noexcept : val(t), has_value(true) {}
 
     // rvalue ctor
     Option(T&& t) : has_value(true) {
@@ -34,7 +34,7 @@ public:
         }
     }
 
-    ~Option() {
+    ~Option() noexcept {
         if (has_value) {
             val.~T();
         }
@@ -76,7 +76,7 @@ public:
 
     /******************/
 
-    bool has() const {
+    bool has() const noexcept {
         return has_value; 
     }
 
@@ -127,7 +127,7 @@ public:
         return ::move(val);
     }
 
-    explicit operator bool() const {
+    explicit operator bool() const noexcept {
         return has_value;
     }
 
