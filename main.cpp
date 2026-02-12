@@ -5,7 +5,6 @@
 
 int main (void) {
     
-    std::cout << "<Option.hpp>\n";
     
     Option<int> o1;
     assert(!o1);
@@ -20,7 +19,9 @@ int main (void) {
 
     // copy constructor 
     auto o4 = o3;
-    assert(*o4 == "hey" && o3.value().size());
+    assert(*o4 == "hey" && (*o3).size());
+    
+    std::cout << "All tests completed.\n";
 
     return 0;
 }
