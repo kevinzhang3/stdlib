@@ -17,8 +17,17 @@ int main (void) {
     Option<std::string> o3("hi");
     Option<std::string> o4(o3);
     assert(*o3 == "hi");
-    assert(*o3 == *o4);
     assert(*o4 == "hi");
+    assert(*o3 == *o4);
+
+    // move ctor 
+    Option<std::string> o5("hello");
+    Option<std::string> o6(::move(o5));
+    assert(!o5 && o6);
+    assert(*o6 == "hello");
+
+    
+    // emplace
 
     std::cout << "All tests completed.\n";
 
