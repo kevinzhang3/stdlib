@@ -1,0 +1,147 @@
+#include "../Utilities.hpp"
+
+template<typename T>
+class Option {
+public:
+    union {
+        char dummy; 
+        T val;
+    };
+    bool has_value = false;
+
+    Option() : dummy(0), has_value(false) {}
+
+    Option(const T& t) noexcept : val(t), has_value(true) {}
+
+    // rvalue ctor
+    Option(T&& t) : has_value(true) {
+        new (&val) T(::move(t));
+    }
+
+    // copy cto
+    Option(const Option& o) : has_value(o.has_value) {
+        if (o.has_value) {
+            new (&val) T(o.val);  // placement new to copy the contained value
+        } else {
+            dummy = 0;
+        }
+    }
+
+    // ::move ctor
+    Option(Option&& o) : has_value(o.has_value) {
+        if (o.has_value) {
+            new (&val) T(::move(o.val));
+            o.reset();
+        } else {
+            dummy = 0;
+        }
+    }
+
+    ~Option() noexcept {
+        if (has_value) {
+            val.~T();
+        }
+    }
+
+    template<class... Args>
+    void emplace(Args&&... args) {
+        if (has_value) {
+            val.~T();
+        }
+        new (&val) T(forward(args...));
+        has_value = true;
+    }
+
+    void reset() {
+        if (has_value) {
+            has_value = false;
+            val.~T();
+            dummy = 0;
+        }
+    }
+    
+    bool has() const noexcept {
+        return has_value; 
+    }
+    
+    /* value() overloads */
+
+    T& value() & {
+        return val; 
+    }
+
+    const T& value() const & {
+        return val;
+    }
+
+    T&& value() && {
+        return ::move(val); 
+    }
+
+    const T&& value() const && {
+        return ::move(val);
+    }  
+
+    /* operator overloads */
+
+
+    Option& operator= (const T& t) {
+        emplace(t); 
+        return *this;
+    }
+
+    Option& operator= (T&& t) {
+        emplace(::move(t));
+        return *this;
+    }
+
+    // copy assign 
+    Option& operator= (Option& o) {
+        if (o.has_value) {
+            emplace(*o);
+        } else {
+            reset();
+        }
+        return *this;
+    }
+
+    // move assign 
+    Option& operator= (Option&& o) {
+        if (o.has_value) {
+            emplace(::move(*o));
+            o.reset();
+        } else {
+            reset();
+        }
+        return *this;
+    }
+
+    T& operator* () & {
+        return val;
+    }
+
+    const T& operator* () const & {
+        return val; 
+    }
+
+    T&& operator* () && {
+        return ::move(val);
+    }
+
+    const T&& operator* () const && {
+        return ::move(val);
+    }
+
+    T* operator-> () & {
+        return &val;
+    }
+
+    const T* operator-> () const & {
+        return &val;
+    }
+
+    explicit operator bool() const noexcept {
+        return has_value;
+    }
+
+};

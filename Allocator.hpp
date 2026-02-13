@@ -1,3 +1,5 @@
+#include "Utilities.hpp"
+
 template <class T>
 class Allocator {
     const int max_size = 4096;
@@ -19,7 +21,7 @@ class Allocator {
 
         template <class... Args>
         void construct(T* ptr, Args&&... args) {
-            new (ptr) T(args...);
+            new (ptr) T(forward(args...));
         }
         
         void destroy(T* ptr) {
