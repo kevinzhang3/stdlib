@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-I.",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-c",
+      "-o",
+      "build/option.o",
+      "test/option.cpp"
+    ],
+    "directory": "/home/zhangk/stuff/stdlib",
+    "file": "/home/zhangk/stuff/stdlib/test/option.cpp",
+    "output": "/home/zhangk/stuff/stdlib/build/option.o"
+  }
+]

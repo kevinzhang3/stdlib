@@ -3,11 +3,11 @@
 template<typename T>
 class Option {
 public:
-    bool has_value = false;
     union {
         char dummy; 
         T val;
     };
+    bool has_value = false;
 
     Option() : dummy(0), has_value(false) {}
 
@@ -56,6 +56,10 @@ public:
         }
     }
     
+    bool has() const noexcept {
+        return has_value; 
+    }
+    
     /* value() overloads */
 
     T& value() & {
@@ -74,11 +78,8 @@ public:
         return ::move(val);
     }  
 
-    /******************/
+    /* operator overloads */
 
-    bool has() const noexcept {
-        return has_value; 
-    }
 
     Option& operator= (const T& t) {
         emplace(t); 
@@ -100,7 +101,7 @@ public:
         return *this;
     }
 
-    // ::move assign 
+    // move assign 
     Option& operator= (Option&& o) {
         if (o.has_value) {
             emplace(::move(*o));
@@ -125,6 +126,14 @@ public:
 
     const T&& operator* () const && {
         return ::move(val);
+    }
+
+    T* operator-> () & {
+        return &val;
+    }
+
+    const T* operator-> () const & {
+        return &val;
     }
 
     explicit operator bool() const noexcept {
