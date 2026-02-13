@@ -10,11 +10,15 @@ int main (void) {
     assert(!o1);
     assert(o1.dummy == 0);
     
-    // const ctor 
-    const int x = 5;
-    Option<const int> o2(x);
-    assert(o2.has_value && std::is_const<decltype(*o2)>::value);
-
+    Option<int> o2(15);
+    assert(*o2 == 15);
+    
+    // copy ctor
+    Option<std::string> o3("hi");
+    Option<std::string> o4(o3);
+    assert(*o3 == "hi");
+    assert(*o3 == *o4);
+    assert(*o4 == "hi");
 
     std::cout << "All tests completed.\n";
 

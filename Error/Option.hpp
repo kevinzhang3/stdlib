@@ -11,7 +11,6 @@ public:
 
     Option() : dummy(0), has_value(false) {}
 
-    // const ctor
     Option(const T& t) noexcept : val(t), has_value(true) {}
 
     // rvalue ctor
@@ -19,18 +18,22 @@ public:
         new (&val) T(::move(t));
     }
 
-    // copy ctor
+    // copy cto
     Option(const Option& o) : has_value(o.has_value) {
-        if (has_value) {
-            new (&val) T(o.val);
+        if (o.has_value) {
+            new (&val) T(o.val);  // placement new to copy the contained value
+        } else {
+            dummy = 0;
         }
     }
 
     // ::move ctor
     Option(Option&& o) : has_value(o.has_value) {
-        if (has_value) {
+        if (o.has_value) {
             new (&val) T(::move(o.val));
             o.reset();
+        } else {
+            dummy = 0;
         }
     }
 
@@ -53,6 +56,7 @@ public:
         if (has_value) {
             has_value = false;
             val.~T();
+            dummy = 0;
         }
     }
     
