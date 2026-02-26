@@ -48,7 +48,7 @@ public:
         if (has_value) {
             val.~T();
         }
-        new (&val) T(forward(args...));
+        new (&val) T(::forward<Args>(args)...);
         has_value = true;
     }
 
